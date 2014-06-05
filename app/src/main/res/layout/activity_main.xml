@@ -1,0 +1,31 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity"
+    tools:ignore="MergeRootFrame">
+
+    <fragment xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/leftfragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:name="com.popo.mr.touchanimationtest.app.LeftFragment"
+        tools:layout="@layout/left_fragment"></fragment>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/rightpanel"
+        android:background="@android:color/holo_blue_light"
+        android:layout_gravity="right">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="LOL WTF?!?!">
+            </TextView>
+
+        </FrameLayout>
+
+</FrameLayout>
