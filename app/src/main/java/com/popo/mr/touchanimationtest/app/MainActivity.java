@@ -1,5 +1,6 @@
 package com.popo.mr.touchanimationtest.app;
 
+import android.animation.TimeInterpolator;
 import android.app.Activity;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
@@ -7,6 +8,11 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.View;
+import android.view.animation.AccelerateDecelerateInterpolator;
+import android.view.animation.AccelerateInterpolator;
+import android.view.animation.BounceInterpolator;
+import android.view.animation.DecelerateInterpolator;
+import android.view.animation.LinearInterpolator;
 
 
 public class MainActivity extends Activity {
@@ -21,7 +27,7 @@ public class MainActivity extends Activity {
     private int xVelocityThreshold;
     private int xPositionThreshold;
     private final double X_POSITION_THRESHOLD_RATIO = 0.4;
-    private final double X_VELOCITY_THRESHOLD_RATIO = 0.15;
+    private final double X_VELOCITY_THRESHOLD_RATIO = 0.20;
     private float previousDownX;
     private int windowWidth;
 
@@ -51,26 +57,33 @@ public class MainActivity extends Activity {
         }
     }
 
-    // FIX ME: Smoother animations would be great
     private void animateOpen() {
         this.rightPanel.setVisibility(View.VISIBLE);
-        rightPanel.animate().setDuration(1000).translationX(0);
+        rightPanel.animate().setInterpolator(new TimeInterpolator() {
+            @Override
+            public float getInterpolation(float v) {
+                if( v <= 0.5f){
+                    return v * 1.6f;
+                }
+                return (float) Math.pow(v - 1, 5) + 1;
+            }
+        }).translationX(0);
         this.currentContentFragmentState = ContentFragmentState.OPEN;
     }
 
     private void animateClose() {
-        rightPanel.animate().setDuration(1000).translationX(this.windowWidth);
+        rightPanel.animate().translationX(this.windowWidth);
         this.currentContentFragmentState = ContentFragmentState.CLOSED;
     }
 
     private void animateSwipeOpen() {
         this.rightPanel.setVisibility(View.VISIBLE);
-        rightPanel.animate().setDuration(300).translationX(0);
+        rightPanel.animate().translationX(0);
         this.currentContentFragmentState = ContentFragmentState.OPEN;
     }
 
     private void animateSwipeClose() {
-        rightPanel.animate().setDuration(300).translationX(this.windowWidth);
+        rightPanel.animate().translationX(this.windowWidth);
         this.currentContentFragmentState = ContentFragmentState.CLOSED;
     }
 

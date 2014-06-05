@@ -9,23 +9,25 @@
     <fragment xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
         android:id="@+id/leftfragment"
+        android:name="com.popo.mr.touchanimationtest.app.LeftFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:name="com.popo.mr.touchanimationtest.app.LeftFragment"
         tools:layout="@layout/left_fragment"></fragment>
 
     <FrameLayout
+        android:id="@+id/rightpanel"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/rightpanel"
-        android:background="@android:color/holo_blue_light"
-        android:layout_gravity="right">
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="LOL WTF?!?!">
-            </TextView>
+        android:layout_gravity="right"
+        android:background="@android:color/background_light">
 
-        </FrameLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="@dimen/activity_horizontal_margin"
+                android:text="@string/lorem"></TextView>
+
+    </FrameLayout>
 
 </FrameLayout>
