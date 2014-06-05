@@ -2,6 +2,7 @@ package com.popo.mr.touchanimationtest.app;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
@@ -17,10 +18,12 @@ public class MainActivity extends Activity {
     public ContentFragmentState currentContentFragmentState;
     View rightPanel;
     private VelocityTracker mVelocityTracker = null;
-    private final int X_VELOCITY_THRESHOLD = 1000;
-    private final int X_POSITION_THRESHOLD = 300;
-    private final int X_LEFT_THRESHOLD = 100;
+    private int xVelocityThreshold;
+    private int xPositionThreshold;
+    private final double X_POSITION_THRESHOLD_RATIO = 0.4;
+    private final double X_VELOCITY_THRESHOLD_RATIO = 0.15;
     private float previousDownX;
+    private int windowWidth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,8 +31,13 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
         rightPanel = findViewById(R.id.rightpanel);
         rightPanel.setVisibility(View.GONE);
-        rightPanel.setX(1200f);
-        Log.v("WTF", "WTF IS THE LEFT " + rightPanel.getLeft());
+        DisplayMetrics dm = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(dm);
+        this.windowWidth = dm.widthPixels;
+        rightPanel.setX(this.windowWidth);
+        this.xPositionThreshold = (int) (this.windowWidth * X_POSITION_THRESHOLD_RATIO);
+        this.xVelocityThreshold = (int) (this.windowWidth * X_VELOCITY_THRESHOLD_RATIO);
+//        Log.d("POPO", this.windowWidth + " " + this.xPositionThreshold + " " + this.xVelocityThreshold);
         this.currentContentFragmentState = ContentFragmentState.CLOSED;
 
     }
@@ -38,12 +46,7 @@ public class MainActivity extends Activity {
 
         switch (this.currentContentFragmentState) {
             case CLOSED:
-
                 animateOpen();
-
-                break;
-            case OPEN:
-                animateClose();
                 break;
         }
     }
@@ -51,32 +54,34 @@ public class MainActivity extends Activity {
     // FIX ME: Smoother animations would be great
     private void animateOpen() {
         this.rightPanel.setVisibility(View.VISIBLE);
-        rightPanel.animate().setDuration(1500).translationX(0);
+        rightPanel.animate().setDuration(1000).translationX(0);
         this.currentContentFragmentState = ContentFragmentState.OPEN;
     }
 
     private void animateClose() {
-        rightPanel.animate().setDuration(1500).translationX(1200);
+        rightPanel.animate().setDuration(1000).translationX(this.windowWidth);
         this.currentContentFragmentState = ContentFragmentState.CLOSED;
     }
 
-    private void animateSwipeOpen(){
+    private void animateSwipeOpen() {
         this.rightPanel.setVisibility(View.VISIBLE);
         rightPanel.animate().setDuration(300).translationX(0);
         this.currentContentFragmentState = ContentFragmentState.OPEN;
     }
-    private void animateSwipeClose(){
-        rightPanel.animate().setDuration(300).translationX(1200);
+
+    private void animateSwipeClose() {
+        rightPanel.animate().setDuration(300).translationX(this.windowWidth);
         this.currentContentFragmentState = ContentFragmentState.CLOSED;
     }
 
-//    @Override
-//    public boolean dispatchTouchEvent( MotionEvent motionEvent ){
-//        if ( shouldInterceptTouchEvent(motionEvent)){
-//            return true;
-//        }
-//        return super.dispatchTouchEvent(motionEvent);
-//    }
+    @Override
+    public void onBackPressed() {
+        if (this.currentContentFragmentState == ContentFragmentState.OPEN) {
+            this.animateClose();
+        } else {
+            super.onBackPressed();
+        }
+    }
 
     @Override
     public boolean onTouchEvent(MotionEvent motionEvent) {
@@ -97,7 +102,6 @@ public class MainActivity extends Activity {
                     break;
                 case MotionEvent.ACTION_MOVE:
                     mVelocityTracker.addMovement(motionEvent);
-                    mVelocityTracker.computeCurrentVelocity(1000);
                     if (motionEvent.getX() > this.previousDownX) {
                         this.rightPanel.setX(motionEvent.getX(index) - this.previousDownX);
                     }
@@ -105,9 +109,9 @@ public class MainActivity extends Activity {
 
                     break;
                 case MotionEvent.ACTION_UP:
+                    mVelocityTracker.computeCurrentVelocity(1000);
                     float xVelocity = mVelocityTracker.getXVelocity(pointerId);
-                    Log.d("POPO", "X velocity: " + xVelocity);
-                    if (xVelocity > this.X_VELOCITY_THRESHOLD || (motionEvent.getX() - this.previousDownX > this.X_POSITION_THRESHOLD)) {
+                    if (xVelocity > this.xVelocityThreshold || (motionEvent.getX() - this.previousDownX > this.xPositionThreshold)) {
                         this.animateSwipeClose();
                     } else {
                         this.animateSwipeOpen();
@@ -124,10 +128,4 @@ public class MainActivity extends Activity {
         return super.onTouchEvent(motionEvent);
     }
 
-    private boolean shouldInterceptTouchEvent(MotionEvent motionEvent) {
-        if (this.currentContentFragmentState == ContentFragmentState.OPEN) {
-            return true;
-        }
-        return false;
-    }
 }
