@@ -1,4 +1,5 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:custom="http://schemas.android.com/apk/com.popo.mr.touchanimationtest.app"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/container"
     android:layout_width="match_parent"
@@ -6,28 +7,30 @@
     tools:context=".MainActivity"
     tools:ignore="MergeRootFrame">
 
-    <fragment xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
+    <fragment
         android:id="@+id/leftfragment"
         android:name="com.popo.mr.touchanimationtest.app.LeftFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:layout="@layout/left_fragment"></fragment>
 
-    <FrameLayout
+    <com.popo.mr.touchanimationtest.app.RightPanel
         android:id="@+id/rightpanel"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="right"
         android:background="@android:color/background_light">
 
-
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_margin="@dimen/activity_horizontal_margin"
                 android:text="@string/lorem"></TextView>
+        </ScrollView>
 
-    </FrameLayout>
+    </com.popo.mr.touchanimationtest.app.RightPanel>
 
 </FrameLayout>
